@@ -1,17 +1,29 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useFetchProducts } from "../useFetchProducts";
+import { useQuery } from "../useQuery";
 
 const Products = () => {
+    const [products, setProducts] = useState();
+    const { query } = useQuery("filter");
     const page = useParams().page;
-
     const [response, responseStatus] = useFetchProducts(page);
+
+    useEffect(() => {
+        if (responseStatus === "success") {
+            if (!query) {
+                setProducts(response.data);
+            } else {
+                setProducts(response.data.filter(product => product.id === parseInt(query)));
+            }
+        }
+    }, [response, responseStatus, query])
 
     switch (responseStatus) {
         case "loading":
             return <progress />
 
         case "success":
-            const products = response.data;
             return (
                 (products && products.length > 0) && (
                     <table>
