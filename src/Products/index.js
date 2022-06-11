@@ -7,7 +7,7 @@ import Pagination from "../Pagination";
 const Products = () => {
     const [products, setProducts] = useState();
     const { query } = useQuery("filter");
-    const page = useParams().page;
+    const { page } = useParams();
     const [response, responseStatus] = useFetchProducts(page);
 
     useEffect(() => {
@@ -49,10 +49,14 @@ const Products = () => {
                         <Pagination pages={response.total_pages} />
                     </>
                 )) || (
-                    <>
+                    page > response.total_pages ? (
+                        <>
+                            <p>Page does not exist</p>
+                            <Link to={"/1"}>Refresh Page</Link>
+                        </>
+                    ) : (
                         <p>No results found</p>
-                        <Link to={"/1"}>Refresh Page</Link>
-                    </>
+                    )
                 )
             );
 
