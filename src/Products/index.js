@@ -1,30 +1,23 @@
-import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { v4 as randomId } from 'uuid';
 import { useFetchProducts } from "../useFetchProducts";
 import { useQuery } from "../useQuery";
-import Pagination from "../Pagination";
+import Pagination from "@mui/material/Pagination";
+import PaginationItem from '@mui/material/PaginationItem';
 
 const Products = () => {
-    const [products, setProducts] = useState();
     const { query } = useQuery("filter");
-    const { page } = useParams();
-    const [response, responseStatus] = useFetchProducts(page);
+    const params = useParams();
+    const page = parseInt(params.page);
+    const [response, responseStatus] = useFetchProducts(page, query);
 
-    useEffect(() => {
-        if (responseStatus === "success") {
-            if (!query) {
-                setProducts(response.data);
-            } else {
-                setProducts(response.data.filter(product => product.id === parseInt(query)));
-            }
-        }
-    }, [response, responseStatus, query])
 
     switch (responseStatus) {
         case "loading":
             return <progress />
 
         case "success":
+            const products = query ? [response.data] : response.data;
             return (
                 (products && products.length > 0 && (
                     <>
@@ -37,7 +30,7 @@ const Products = () => {
                                 </tr>
                                 {
                                     products.map(product => (
-                                        <tr key={product.id}>
+                                        <tr key={randomId()}>
                                             <td>{product.id}</td>
                                             <td>{product.name}</td>
                                             <td>{product.year}</td>
@@ -46,7 +39,17 @@ const Products = () => {
                                 }
                             </tbody>
                         </table>
-                        <Pagination pages={response.total_pages} />
+                        <Pagination
+                            page={page}
+                            count={response.total_pages}
+                            renderItem={(item) => (
+                                <PaginationItem
+                                    component={Link}
+                                    to={`/${item.page}`}
+                                    {...item}
+                                />
+                            )}
+                        />
                     </>
                 )) || (
                     page > response.total_pages ? (
