@@ -3,7 +3,7 @@ import Products from './Products';
 import Search from './Search';
 
 const App = () => (
-  <HashRouter initialEntries={['/']} initialIndex={0}>
+  <HashRouter>
     <Search />
     <main>
       <Routes>
