@@ -16,7 +16,9 @@ const Products = () => {
             return <progress />
 
         case "success":
-            const products = query ? [response.data] : response.data;
+            const products = response.data instanceof Array ?
+                response.data :
+                [response.data];
             return (
                 (products && products.length > 0 && (
                     <>

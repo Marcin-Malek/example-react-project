@@ -6,7 +6,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { v4 as randomId } from 'uuid';
 
 export default function BasicTable({ products }) {
 
@@ -23,7 +22,7 @@ export default function BasicTable({ products }) {
                 <TableBody>
                     {products.map((product) => (
                         <TableRow
-                            key={randomId()}
+                            key={product.id}
                             sx={{  '&:last-child td, &:last-child th': { border: 0 },  backgroundColor: product.color}}
                         >
                             <TableCell component="th" scope="row">{product.id}</TableCell>
